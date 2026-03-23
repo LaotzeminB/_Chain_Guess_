@@ -1,44 +1,56 @@
-🔗 Solana Chain Guess - CRUD & Counter 🎮 ¡Bienvenido a Chain Guess! Este es un programa desarrollado en la red de Solana utilizando el framework Anchor. El proyecto ha sido diseñado para cumplir con los requisitos de certificación de Waylearn, demostrando el ciclo completo de vida de una cuenta en la blockchain (CRUD) y la manipulación de estados mediante un contador de intentos.
+🦀 ChainGuess: Decentralized Guessing Game on Solana
+ChainGuess es un Smart Contract de próxima generación construido sobre la red de Solana utilizando el framework Anchor. El proyecto demuestra cómo implementar una lógica de juego justa, segura y eficiente, eliminando la necesidad de intermediarios mediante el uso de la arquitectura de la blockchain.
 
-🚀 Características Técnicas (Certificación) Este repositorio demuestra el dominio de los siguientes conceptos fundamentales de Solana:
+🚀 Propuesta de Valor
+En los juegos de azar tradicionales, la transparencia es una duda constante. ChainGuess resuelve esto mediante:
 
-Create (Crear): Función inicializa que genera una cuenta de juego única, define un número secreto y establece la autoridad del usuario.
+Custodia Descentralizada: El contrato actúa como un escrow seguro que retiene la apuesta.
 
-Read (Leer): Implementación de fetching de cuentas en el cliente y pruebas para visualizar el estado del juego en tiempo real.
+Pagos Atómicos: El premio se transfiere al ganador en la misma milésima de segundo en que se valida el acierto.
 
-Actualización (Actualizar): La función Supongo modifica el estado de la cuenta incrementando el Contador de Intentos (intentos) en cada interacción.
+Inmutabilidad: Una vez creada la partida, las reglas y el premio no pueden ser alterados.
 
-Eliminar (Eliminar): Implementación de la función eliminar_juego utilizando el atributo close de Anchor para cerrar la cuenta y recuperar los SOL de la renta (Rent-Exempt).
+🛠️ Stack Tecnológico
+Lenguaje: Rust 🦀
 
-🛠️ Estructura del Proyecto /programs/chain_guess/src/lib.rs: Lógica del Smart Contract en Rust. Incluye el manejo de errores personalizados, restricciones de seguridad y el Contador de Intentos.
+Framework: Anchor v0.29.0
 
-/tests/chain_guess.test.ts: Suite de pruebas automatizadas que validan el flujo CRUD completo (Optimizado para ejecutar en Solana Playground).
+Client/Testing: TypeScript & Mocha
 
-/client.ts: Script de ejecución rápida optimizado para Solana Playground, eliminando dependencias de archivos locales para asegurar que el comando Run funcione correctamente en el navegador.
+Blockchain: Solana (Devnet)
 
-/app: Interfaz de cliente preparada para interactuar con el programa en Devnet.
+🧠 Implementación Técnica (Deep Dive)
+1. Program Derived Addresses (PDAs)
+Utilizamos PDAs para la gestión de estados. Cada partida es una cuenta única generada por una combinación de una seed_id dinámica y la PublicKey del usuario.
 
-🧪 Pruebas de Funcionamiento Para verificar la integridad del programa, se han ejecutado pruebas unitarias que confirman el éxito de las operaciones:
+Rust
+seeds = [seed_id.as_bytes(), user.key().as_ref()]
+Esto permite que un mismo usuario pueda tener múltiples partidas activas simultáneamente sin colisiones de datos.
 
-Inicialización: Cuenta creada con éxito con estado inicial.
+2. Gestión Eficiente de Fondos (CPI & Lamports)
+Depósito: Utilizamos una Cross-Program Invocation (CPI) al system_program para transferir de forma segura el SOL del usuario al contrato durante la inicialización.
 
-Lógica del Juego: Incremento del contador intentos verificado tras cada llamado a la instrucción adivinar.
+Retiro: Implementamos una lógica de transferencia directa de lamports modificando el balance de las cuentas en tiempo de ejecución, lo que reduce el consumo de unidades de cómputo (CU).
 
-Cierre de Cuenta: Verificación técnica de que la cuenta se elimina y los fondos (renta) regresan a la autoridad del usuario.
+3. Suite de Pruebas Robusta
+Nuestros tests no solo verifican la lógica, sino que gestionan la naturaleza asíncrona de Solana. Implementamos una sincronización forzada mediante confirmTransaction y getLatestBlockhash para garantizar que el estado de la blockchain sea consistente antes de realizar aserciones.
 
-Resultado del Test: 1 pase (450ms) ✅ (Ciclo CRUD Completo verificado en Solana Playground).
+📋 Instrucciones de Ejecución (Solana Playground)
+Build & Deploy:
 
-🛠️ Cómo ejecutar el proyecto Clonar el repo: git clone https://github.com/LaotzeminB/Chain_guess _
+ID del Programa: FydUWyryHSJWsofMMTz5kCNnuRUVEW2hMoDPX8iik8Xj
 
-Dependencias instalales: construcción de anclaje
+Compilar usando el icono del martillo y desplegar en Devnet.
 
-Desplegar: ancla desplegar
+Pruebas Automatizadas:
 
-Correr Tests: En Solana Playground, dirígete a la pestaña de Test y presiona el botón Run Test.
+Ir a la pestaña de Tests y ejecutar.
 
-🛠️ Próximas Mejoras (Work in Progress) 🚧 Este proyecto se encuentra en una etapa de mejora continua. Actualmente, estoy trabajando en las siguientes implementaciones:
+Se validará la inicialización, la confirmación de la cuenta en el validador y el flujo de victoria.
 
-🛡️ Seguridad Avanzada: Implementación de PDA (Program Derived Addresses) para una gestión de cuentas más robusta.
+Script de Cliente (app.ts):
+
+Ejecutar run client/app.ts para observar una ejecución maestra con logs detallados y manejo de errores.
 
 🎨 Interfaz de Usuario (UI/UX): Refactorización del frontend para una experiencia más intuitiva.
 
