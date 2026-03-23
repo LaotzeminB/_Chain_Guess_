@@ -1,59 +1,60 @@
-🦀 ChainGuess: Decentralized Guessing Game on Solana
-ChainGuess es un Smart Contract de próxima generación construido sobre la red de Solana utilizando el framework Anchor. El proyecto demuestra cómo implementar una lógica de juego justa, segura y eficiente, eliminando la necesidad de intermediarios mediante el uso de la arquitectura de la blockchain.
+¡Entendido! Te lo he unificado en un solo bloque de texto continuo para que no se pierda nada al copiar y pegar. He quitado decoraciones extra para que el formato Markdown de GitHub lo reconozca perfecto a la primera.
 
-🚀 Propuesta de Valor
-En los juegos de azar tradicionales, la transparencia es una duda constante. ChainGuess resuelve esto mediante:
+Copia todo el contenido de aquí abajo:
 
-Custodia Descentralizada: El contrato actúa como un escrow seguro que retiene la apuesta.
+🎰 ChainGuess | Solana Hackathon 2026
+ChainGuess es un protocolo de juego on-chain desarrollado en Rust con el framework Anchor. El contrato gestiona el ciclo de vida completo de una apuesta: compromiso de fondos, validación de aciertos y liquidación instantánea del premio mediante la arquitectura de Solana.
 
-Pagos Atómicos: El premio se transfiere al ganador en la misma milésima de segundo en que se valida el acierto.
+📖 Tabla de Contenidos
+Visión General
 
-Inmutabilidad: Una vez creada la partida, las reglas y el premio no pueden ser alterados.
+Arquitectura del Contrato
 
-🛠️ Stack Tecnológico
-Lenguaje: Rust 🦀
+Seguridad y Optimización
 
-Framework: Anchor v0.29.0
+Guía de Ejecución
 
-Client/Testing: TypeScript & Mocha
+Estructura del Proyecto
 
-Blockchain: Solana (Devnet)
+🎯 Visión General
+ChainGuess elimina la necesidad de intermediarios en los juegos de azar. El contrato actúa como un "Escrow" inteligente que retiene la apuesta inicial y solo libera los fondos cuando se verifica matemáticamente que el usuario ha adivinado el número secreto.
 
-🧠 Implementación Técnica (Deep Dive)
-1. Program Derived Addresses (PDAs)
-Utilizamos PDAs para la gestión de estados. Cada partida es una cuenta única generada por una combinación de una seed_id dinámica y la PublicKey del usuario.
-
-Rust
+🏗️ Arquitectura del Contrato
+Program Derived Addresses (PDAs)
+Implementamos PDAs dinámicas para garantizar que cada partida sea única y aislada. La dirección se deriva de:
 seeds = [seed_id.as_bytes(), user.key().as_ref()]
-Esto permite que un mismo usuario pueda tener múltiples partidas activas simultáneamente sin colisiones de datos.
 
-2. Gestión Eficiente de Fondos (CPI & Lamports)
-Depósito: Utilizamos una Cross-Program Invocation (CPI) al system_program para transferir de forma segura el SOL del usuario al contrato durante la inicialización.
+Instrucciones Principales
+initialize: Configura la partida, establece el número secreto y realiza un CPI (Cross-Program Invocation) para depositar el SOL del usuario en la cuenta del juego.
 
-Retiro: Implementamos una lógica de transferencia directa de lamports modificando el balance de las cuentas en tiempo de ejecución, lo que reduce el consumo de unidades de cómputo (CU).
+guess: Procesa los intentos del usuario. Si el número coincide, marca el estado como ganado y transfiere el premio automáticamente.
 
-3. Suite de Pruebas Robusta
-Nuestros tests no solo verifican la lógica, sino que gestionan la naturaleza asíncrona de Solana. Implementamos una sincronización forzada mediante confirmTransaction y getLatestBlockhash para garantizar que el estado de la blockchain sea consistente antes de realizar aserciones.
+🔐 Seguridad y Optimización
+Atomicidad: La validación y el pago ocurren en la misma transacción. Si algo falla, el estado no se altera.
 
-📋 Instrucciones de Ejecución (Solana Playground)
-Build & Deploy:
+Direct Lamport Manipulation: Optimizamos el consumo de Compute Units (CU) modificando directamente los balances de las cuentas en lugar de usar instrucciones de transferencia externas.
 
+Manejo de Errores: Códigos de error personalizados (ej. AlreadyWon) para evitar reintegros dobles o intentos en juegos finalizados.
+
+🚀 Guía de Ejecución en Solana Playground
+1. Despliegue (Deploy)
 ID del Programa: FydUWyryHSJWsofMMTz5kCNnuRUVEW2hMoDPX8iik8Xj
 
-Compilar usando el icono del martillo y desplegar en Devnet.
+Red: Solana Devnet.
 
-Pruebas Automatizadas:
+2. Pruebas (Tests)
+Ejecuta la suite en tests/chain_guess.test.ts.
 
-Ir a la pestaña de Tests y ejecutar.
+Los tests incluyen sincronización de red mediante confirmTransaction para asegurar la integridad de los datos en tiempo real.
 
-Se validará la inicialización, la confirmación de la cuenta en el validador y el flujo de victoria.
+3. Cliente (App)
+Ejecuta run client/app.ts para ver la interacción completa desde la terminal, incluyendo logs detallados del proceso de victoria.
 
-Script de Cliente (app.ts):
+📁 Estructura del Proyecto
+programs/chain_guess/src/lib.rs: Lógica del Smart Contract en Rust.
 
-Ejecutar run client/app.ts para observar una ejecución maestra con logs detallados y manejo de errores.
+tests/chain_guess.test.ts: Suite de pruebas de integración en TypeScript.
 
-🎨 Interfaz de Usuario (UI/UX): Refactorización del frontend para una experiencia más intuitiva.
+client/app.ts: Script de cliente para demostración rápida.
 
-📊 Historial Global: Creación de un Leaderboard on-chain para registrar los mejores puntajes.
-
-Desarrollado por Laotzemin Beatriz Sanchez Flores para la Certificación de Desarrollo en Solana. 🦀
+Desarrollado para el Solana Hackathon 2026. Status: MVP Functional ✅
